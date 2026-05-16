@@ -1,0 +1,169 @@
+{% extends "util/base.html" %}
+{% load humanize %}
+{% block content %}
+
+    <div class="pt-dashboard">      
+        <aside class="pt-sidebar">
+            <div>
+                <ul class="pt-sidebar-nav">
+                    <li><a href="{% url 'paper-wallet' %}" class="active"><i class="fa fa-wallet"></i> Wallet</a></li>
+                    <li><a href="{% url 'portfolio' %}"><i class="fa fa-chart-pie"></i> Portfolio</a></li>
+                    <li><a href="{% url 'history' %}"><i class="fa fa-history"></i> History</a></li>
+                    <li><a href="{% url 'stock-list' %}"><i class="fa fa-chart-line"></i> Invest</a></li>
+                </ul>
+            </div>
+
+            <div class="pt-sidebar-bottom">
+                <div class="pt-user-profile">
+                    <div class="pt-user-avatar">{{ request.user.first_name|slice:1 }}{{ request.user.last_name|slice:1 }}
+                    </div>
+                    <div class="pt-user-info">
+                        <span class="pt-user-name">{{ request.user.get_full_name|default:request.user.email }}</span>
+                        <span class="pt-user-role">Student Account</span>
+                    </div>
+                </div>
+                <a href="#" class="pt-settings-link"><i class="fa fa-cog"></i> Settings</a>
+            </div>
+        </aside>
+
+        <main class="pt-main">
+            
+            <header class="pt-header">
+                <h1>Welcome, {{user.first_name}} {{user.last_name}}</h1>
+                <p>Paper Trading Simulation Environment</p>
+            </header>
+
+            <div id="dynamic-view">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                    <div>
+                        <div class="pt-card">
+                            <h2 class="pt-card-title">Naira Wallet Balance</h2>
+                            <div class="pt-value-large">
+                                ₦{{ wallet.balance|intcomma }}
+                            </div>
+                            <span class="status-pill status-success">Virtual Account</span>
+                        </div>
+
+                        <div class="pt-card">
+                            <h2 class="pt-card-title">Recent Transactions</h2>
+                            <table class="pt-table">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for transaction in transactions %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ transaction.transaction_type }}
+                                        <br>
+
+                                        <span style="color:#94A3B8; font-size:12px;">
+                                            {{ transaction.created_at }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        ₦{{ transaction.amount }}
+                                    </td>
+
+                                    <td>
+                                        <span class="status-pill status-success">
+                                            {{ transaction.status }}
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="pt-card">
+                            <h2 class="pt-card-title">Balance Summary</h2>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="color: #94A3B8;">Total Balance</span>
+                                <strong>₦{{ wallet.balance|intcomma }}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: #94A3B8;">Available To Trade</span>
+                                <strong>₦{{ wallet.balance|intcomma }}</strong>
+                            </div>
+                        </div>
+
+                        <!-- Transaction Section Container -->
+                        <div class="pt-card" style="text-align: center;">
+                            
+                            <h3 style="color: #F8FAFC; margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">Fund Account</h3>
+
+                            <form action="{% url 'deposit' %}" method="POST" style="margin-bottom: 12px;">
+                                {% csrf_token %}
+                                
+                                <div style="position: relative; margin-bottom: 16px;">
+                                    <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94A3B8;">₦</span>
+                                    <input type="number" 
+                                        name="amount" 
+                                        placeholder="0.00" 
+                                        min="1" 
+                                        step="0.01" 
+                                        style="width: 100%;  padding: 14px 14px 14px 30px; 
+                                                background: #1E293B; 
+                                                border: 1px solid #334155; 
+                                                border-radius: 8px; 
+                                                color: #FFFFFF; 
+                                                font-size: 16px;
+                                                outline: none;
+                                                transition: border-color 0.2s;"
+                                        onfocus="this.style.borderColor='#38BDF8'"
+                                        onblur="this.style.borderColor='#334155'">
+                                </div>
+
+                                <button
+                                        class="pt-btn"
+                                        style="
+                                            width: 100%;
+                                            background-color: #334155;
+                                            color: #FFFFFF;
+                                            padding: 12px;
+                                        "
+                                    >
+                                        Deposit
+                                    </button>
+                            </form>
+
+                            <div style="text-align: center;">
+                                <button style="
+                                    background: transparent; 
+                                    border: 1px solid #334155; 
+                                    color: #94A3B8; 
+                                    padding: 10px 20px; 
+                                    border-radius: 8px; 
+                                    width: 100%; 
+                                    cursor: pointer;
+                                    font-size: 14px;
+                                    transition: all 0.2s;"
+                                    onmouseover="this.style.color='#FFFFFF'; this.style.borderColor='#475569'"
+                                    onmouseout="this.style.color='#94A3B8'; this.style.borderColor='#334155'">
+                                    Withdraw Funds
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div> 
+        </main>
+
+    </div>
+
+{% endblock content %}

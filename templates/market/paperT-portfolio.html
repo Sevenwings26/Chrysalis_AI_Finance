@@ -1,0 +1,135 @@
+{% extends "util/base.html" %}
+{% load humanize %}
+{% block content %}
+    <div class="pt-dashboard">
+        
+        <aside class="pt-sidebar">
+            <div>
+                <ul class="pt-sidebar-nav">
+                    <li><a href="{% url 'paper-wallet' %}" class="active"><i class="fa fa-wallet"></i> Wallet</a></li>
+                    <li><a href="{% url 'portfolio' %}"><i class="fa fa-chart-pie"></i> Portfolio</a></li>
+                    <li><a href="{% url 'history' %}"><i class="fa fa-history"></i> History</a></li>
+                    <li><a href="{% url 'stock-list' %}"><i class="fa fa-chart-line"></i> Invest</a></li>
+                </ul>
+            </div>
+
+            <div class="pt-sidebar-bottom">
+                <div class="pt-user-profile">
+                    <div class="pt-user-avatar">EH</div>
+                    <div class="pt-user-info">
+                        <span class="pt-user-name">{{user.first_name}} {{user.last_name}}</span>
+                        <span class="pt-user-role">Student Account</span>
+                    </div>
+                </div>
+                <a href="#" class="pt-settings-link"><i class="fa fa-cog"></i> Settings</a>
+            </div>
+        </aside>
+
+        <main class="pt-main">
+            
+
+            <header class="pt-header">
+                <h1>Welcome, {{user.first_name}} {{user.last_name}}</h1>
+                <p>Paper Trading Simulation Environment</p>
+            </header>
+
+            <div class="pt-card">
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <span style="color: #94A3B8; font-size: 15px;">Total Portfolio Value</span>
+                    <div class="pt-value-large">₦{{ total_portfolio_value|floatformat:2 }}</div>
+                    <small style="color: #10B981;">
+                        ↑ ₦{{ total_equities_value|floatformat:2 }} in Equities
+                    </small>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; align-items: center;">
+                    
+                    <!-- Conic Chart -->
+                    <div style="width: 250px; height: 250px; border-radius: 50%; 
+                                background: conic-gradient(#10B981 {{ cash_percentage }}%, #EAB308 {{ cash_percentage }}% 100%); 
+                                position: relative; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                        
+                        <div style="position: absolute; top: 15%; left: 15%; right: 15%; bottom: 15%; 
+                                    background: #1E293B; border-radius: 50%; display: flex; flex-direction: column; 
+                                    align-items: center; justify-content: center;">
+                            <strong style="font-size: 18px;">Portfolio</strong>
+                            <span style="color: #94A3B8; font-size: 14px;">{{ total_holdings }} Holdings</span>
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div>
+                        <div style="margin-bottom: 18px;">
+                            <span style="color: #10B981; margin-right: 10px; font-size: 18px;">■</span>
+                            <strong>Wallet Liquidity</strong><br>
+                            <span style="color: #94A3B8;">₦{{ wallet.balance|floatformat:2 }} • {{ cash_percentage }}%</span>
+                        </div>
+                        
+                        <div style="margin-bottom: 18px;">
+                            <span style="color: #EAB308; margin-right: 10px; font-size: 18px;">■</span>
+                            <strong>Equities & Bonds</strong><br>
+                            <span style="color: #94A3B8;">₦{{ total_equities_value|floatformat:2 }} • {{ equities_percentage }}%</span>
+                        </div>
+
+                        <div>
+                            <span style="color: #EF4444; margin-right: 10px; font-size: 18px;">■</span>
+                            <strong>T-Bills & CPs</strong><br>
+                            <span style="color: #94A3B8;">₦0.00 • 0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Asset Categories -->
+                    <div style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 30px;">
+                        <h3 style="color: #FFFFFF; margin-bottom: 20px;">Asset Categories</h3>
+                        
+                        <div style="margin-bottom: 20px; padding: 18px; background: #0B1120; border-radius: 12px;">
+                            <span style="color: #EAB308;">■</span> 
+                            <strong>Equities & Bonds</strong><br>
+                            <span style="color: #94A3B8; font-size: 13px;">{{ total_holdings }} Active Positions</span>
+                        </div>
+
+                        <div style="padding: 18px; background: #0B1120; border-radius: 12px;">
+                            <span style="color: #10B981;">■</span> 
+                            <strong>Wallet Liquidity</strong><br>
+                            <span style="color: #94A3B8; font-size: 13px;">Ready to Invest</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Holdings Table (Bonus) -->
+                {% if holdings %}
+                <div style="margin-top: 50px;">
+                    <h3 style="margin-bottom: 20px;">Your Holdings</h3>
+                    <table class="pt-table">
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Qty</th>
+                                <th>Avg Price</th>
+                                <th>Current</th>
+                                <th>Value</th>
+                                <th>P&L %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for holding in holdings %}
+                            <tr>
+                                <td><strong>{{ holding.symbol }}</strong></td>
+                                <td>{{ holding.quantity|floatformat:2 }}</td>
+                                <td>₦{{ holding.avg_buy_price|floatformat:2 }}</td>
+                                <td>₦{{ holding.current_price|floatformat:2|default:"—" }}</td>
+                                <td><strong>₦{{ holding.current_value|floatformat:2 }}</strong></td>
+                                <td style="color: {% if holding.pnl_percent > 0 %}#10B981{% else %}#EF4444{% endif %};">
+                                    {{ holding.pnl_percent|floatformat:2 }}%
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+
+        </main>
+    </div>
+{% endblock content %}

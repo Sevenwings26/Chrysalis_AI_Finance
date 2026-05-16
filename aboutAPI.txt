@@ -1,0 +1,15 @@
+Authentication
+API Keys
+All API requests require authentication via an API key passed in the request header. Keys are issued per integration and scoped to specific access tiers.
+
+1.Request Access
+Use the self-serve form below to request an API key. Personal/Learning requests are issued instantly.
+
+2. Receive Your Key
+You'll receive a unique API key tied to your account and access tier. Keep this key secure — do not expose it in client-side code.
+
+3. Authenticate Requests
+Pass your key in the X-API-Key header on every request.
+
+X-API-Key: your_api_key_here Content-Type: application/json
+

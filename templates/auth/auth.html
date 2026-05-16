@@ -1,0 +1,186 @@
+{% extends 'util/base.html' %}
+
+{% block header_action %}
+    <a href="/" class="ve-cta-btn">
+        <i class="fa fa-arrow-left"></i> Back
+    </a>
+{% endblock header_action %}
+
+{% block content %}
+
+<div class="messages-container" style="width: 100%; max-width: 400px; margin: 2rem auto;">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" 
+                    style="padding: 15px; margin-bottom: 20px; border-radius: 5px; 
+                        {% if message.tags == 'success' %}background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;{% else %}background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;{% endif %}">
+                
+                {{ message }}
+                
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="float: right; background: none; border: none;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+            
+    {% if register_form.errors %}
+        <div class="alert alert-danger">
+            {{ register_form.non_field_errors }}
+            {% for field in register_form %}
+                {% if field.errors %}
+                    {{ field.label }}: {{ field.errors|striptags }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+<div class="auth-page-wrapper">
+    <div class="auth-card">
+
+        <h2 id="authTitle">Login Form</h2>
+
+        <div class="auth-toggle-wrapper">
+            <button id="loginToggleBtn"
+                    class="auth-toggle-btn active"
+                    type="button"
+                    onclick="switchForm('login')">
+                Login
+            </button>
+
+            <button id="signupToggleBtn"
+                    class="auth-toggle-btn"
+                    type="button"
+                    onclick="switchForm('signup')">
+                Signup
+            </button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="loginForm"
+              class="auth-form"
+              action="{% url 'login' %}"
+              method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <input type="email"
+                       name="username"
+                       placeholder="Email Address"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <input type="password"
+                       name="password"
+                       placeholder="Password"
+                       required>
+            </div>
+
+            <a href="#" class="forgot-password">
+                Forgot password?
+            </a>
+
+            <button type="submit" class="auth-submit-btn">
+                Login
+            </button>
+
+            <p class="auth-helper-text">
+                Not a member?
+                <a href="#" onclick="switchForm('signup')">
+                    Signup now
+                </a>
+            </p>
+        </form>
+
+        <!-- SIGNUP FORM -->
+        <form id="signupForm"
+              class="auth-form"
+              style="display: none;"
+              action="{% url 'register' %}"
+              method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-row">
+
+                <div class="form-group half-width">
+                    <input type="text"
+                           name="first_name"
+                           placeholder="First name"
+                           required>
+                </div>
+
+                <div class="form-group half-width">
+                    <input type="text"
+                           name="last_name"
+                           placeholder="Last name"
+                           required>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <input type="tel"
+                       name="phone_number"
+                       placeholder="Phone number"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <input type="email"
+                       name="email"
+                       placeholder="Email Address"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <input type="password"
+                       name="password"
+                       placeholder="Password"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <input type="password"
+                       name="confirm_password"
+                       placeholder="Confirm password"
+                       required>
+            </div>
+
+            <button type="submit" class="auth-submit-btn">
+                Signup
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+
+<script>
+function switchForm(type) {
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const loginBtn = document.getElementById('loginToggleBtn');
+    const signupBtn = document.getElementById('signupToggleBtn');
+    const title = document.getElementById('authTitle');
+
+    if (type === 'login') {
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
+        loginBtn.classList.add('active');
+        signupBtn.classList.remove('active');
+        title.innerText = 'Login Form';
+    } else {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+        signupBtn.classList.add('active');
+        loginBtn.classList.remove('active');
+        title.innerText = 'Signup Form';
+    }
+}
+</script>
+
+{% endblock content %}

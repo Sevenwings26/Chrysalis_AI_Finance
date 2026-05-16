@@ -1,0 +1,1238 @@
+{% extends "util/base.html" %}
+{% load humanize %}
+
+{% block content %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   CHRYSALIS AI — DARK PREMIUM THEME
+   Bloomberg Terminal meets Lagos Luxury Fintech
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:          #f9bf1f;
+  --gold-light:    #dea909;
+  --gold-pale:     #F5E8BE;
+  --gold-dim:      rgba(201, 168, 76, 0.12);
+  --gold-border:   rgba(201, 168, 76, 0.25);
+  --gold-hover:    rgba(201, 168, 76, 0.20);
+
+  --navy:          #090E1A;
+  --navy-mid:      #0E1626;
+  --navy-surface:  #131C30;
+  --navy-card:     #182238;
+  --navy-elevated: #1E2B42;
+  --navy-border:   rgba(255, 255, 255, 0.065);
+  --navy-border-md:rgba(255, 255, 255, 0.10);
+
+  --text-primary:  #EDE9DF;
+  --text-secondary:#8B9BB4;
+  --text-muted:    #404E64;
+  --text-ghost:    #2A3448;
+
+  --green:         #3DC98E;
+  --green-dim:     rgba(61, 201, 142, 0.12);
+  --green-border:  rgba(61, 201, 142, 0.25);
+  --red:           #FC6B6B;
+  --red-dim:       rgba(252, 107, 107, 0.12);
+
+  --radius-sm:     6px;
+  --radius-md:     10px;
+  --radius-lg:     14px;
+  --radius-xl:     18px;
+
+  --sidebar-w:     252px;
+  --font-serif:    'DM Serif Display', Georgia, serif;
+  --font-sans:     'DM Sans', system-ui, sans-serif;
+}
+
+html, body {
+  height: 100%;
+  background: var(--navy);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =======================================
+   LAYOUT
+   ===================================== */
+.chrysalis-app-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--navy);
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.chrysalis-sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--navy-mid);
+  display: flex;
+  flex-direction: column;
+  border-right: 0.5px solid var(--navy-border);
+  position: relative;
+  z-index: 10;
+}
+
+/* Subtle top gold line accent */
+.chrysalis-sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.4;
+}
+
+.sidebar-top {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 22px 14px 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--navy-border) transparent;
+}
+.sidebar-top::-webkit-scrollbar { width: 3px; }
+.sidebar-top::-webkit-scrollbar-thumb { background: var(--navy-border); border-radius: 2px; }
+
+/* Brand */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+  padding: 0 2px;
+}
+.brand-icon {
+  width: 34px; height: 34px;
+  background: var(--gold-dim);
+  border: 0.5px solid var(--gold-border);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.brand-wordmark {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+.brand-wordmark strong { color: var(--gold); font-style: italic; }
+
+/* New Chat Button */
+.new-chat-btn {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--gold-dim);
+  border: 0.5px solid var(--gold-border);
+  border-radius: var(--radius-md);
+  color: var(--gold-light);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.18s, border-color 0.18s;
+  margin-bottom: 22px;
+  letter-spacing: 0.01em;
+}
+.new-chat-btn:hover {
+  background: var(--gold-hover);
+  border-color: rgba(201, 168, 76, 0.4);
+}
+.new-chat-btn .fa { font-size: 14px; }
+
+/* Section Label */
+.section-title {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0 4px;
+  margin-bottom: 7px;
+}
+
+/* Chat History Items */
+.chat-history-list { display: flex; flex-direction: column; gap: 1px; }
+
+.chat-history-item {
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 0.5px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.chat-history-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.chat-history-item.active {
+  background: var(--gold-dim);
+  border-color: var(--gold-border);
+}
+.chat-preview { flex: 1; min-width: 0; }
+.chat-preview strong {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+.chat-history-item.active .chat-preview strong { color: var(--gold-light); }
+.chat-preview small {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chat-item-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.chat-time {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* Delete button — hidden until row is hovered */
+.delete-chat-btn {
+  width: 22px; height: 22px;
+  border-radius: 5px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+}
+.chat-history-item:hover .delete-chat-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+.delete-chat-btn:hover {
+  background: var(--red-dim);
+  color: var(--red);
+}
+
+/* Slide-out animation on delete */
+@keyframes chat-item-out {
+  from { opacity: 1; transform: translateX(0);   max-height: 60px; }
+  to   { opacity: 0; transform: translateX(-12px); max-height: 0;   padding: 0; margin: 0; }
+}
+.chat-history-item.deleting {
+  animation: chat-item-out 0.25s ease-out forwards;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ── Confirm Modal ── */
+.chrysalis-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(9, 14, 26, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  animation: modal-in 0.18s ease-out forwards;
+}
+@keyframes modal-in {
+  to { opacity: 1; }
+}
+.chrysalis-modal {
+  background: var(--navy-card);
+  border: 0.5px solid var(--navy-border-md);
+  border-radius: var(--radius-lg);
+  padding: 28px 28px 22px;
+  width: 340px;
+  max-width: 90vw;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  transform: translateY(6px);
+  animation: modal-slide-in 0.18s ease-out forwards;
+}
+@keyframes modal-slide-in {
+  to { transform: translateY(0); }
+}
+.modal-icon {
+  width: 42px; height: 42px;
+  background: var(--red-dim);
+  border: 0.5px solid rgba(252, 107, 107, 0.25);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  margin-bottom: 14px;
+}
+.modal-title {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.modal-body {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.modal-btn {
+  padding: 9px 18px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 0.5px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.modal-btn.cancel {
+  background: var(--navy-elevated);
+  border-color: var(--navy-border-md);
+  color: var(--text-secondary);
+}
+.modal-btn.cancel:hover { background: var(--navy-surface); color: var(--text-primary); }
+.modal-btn.confirm-delete {
+  background: var(--red-dim);
+  border-color: rgba(252, 107, 107, 0.3);
+  color: var(--red);
+}
+.modal-btn.confirm-delete:hover { background: rgba(252, 107, 107, 0.2); }
+
+/* Sidebar Bottom */
+{% comment %} .sidebar-bottom {
+  padding: 14px;
+  border-top: 0.5px solid var(--navy-border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.user-profile-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.user-profile-block:hover { background: rgba(255, 255, 255, 0.04); }
+.user-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1C3A60, #2B5A90);
+  border: 1px solid rgba(123, 174, 212, 0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #7BAED4;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+.user-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.settings-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
+  font-family: var(--font-sans);
+}
+.settings-link:hover { color: var(--text-secondary); background: rgba(255,255,255,0.03); }
+.settings-link .fa { font-size: 13px; } {% endcomment %}
+
+/* ============================================================
+   CHAT AREA — MAIN
+   ============================================================ */
+.chrysalis-chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--navy);
+  min-width: 0;
+  position: relative;
+}
+
+/* Header */
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 56px;
+  background: var(--navy-mid);
+  border-bottom: 0.5px solid var(--navy-border);
+  flex-shrink: 0;
+  gap: 16px;
+}
+.chat-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+}
+.model-selector-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--navy-card);
+  border: 0.5px solid var(--navy-border);
+  border-radius: 20px;
+  padding: 5px 14px;
+  flex-shrink: 0;
+}
+.model-status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px rgba(61, 201, 142, 0.5);
+  animation: pulse-dot 2.5s infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.model-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.model-selector {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  appearance: none;
+  padding-right: 4px;
+}
+.model-selector option { background: var(--navy-card); color: var(--text-primary); }
+
+/* ============================================================
+   MESSAGES
+   ============================================================ */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--navy-border) transparent;
+}
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--navy-elevated); border-radius: 4px; }
+
+/* Welcome */
+.welcome-message {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  gap: 6px;
+}
+{% comment %} .welcome-logo {
+  width: 58px; height: 58px;
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius-lg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+.welcome-message h2 {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+} {% endcomment %}
+.welcome-message p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.welcome-message small {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 14px;
+}
+.suggestion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 500px;
+}
+.suggestion-chip {
+  padding: 9px 16px;
+  background: var(--navy-card);
+  border: 0.5px solid var(--navy-border);
+  border-radius: 20px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  font-family: var(--font-sans);
+  line-height: 1.3;
+}
+.suggestion-chip:hover {
+  border-color: var(--gold-border);
+  color: var(--gold-light);
+  background: var(--gold-dim);
+}
+
+/* Message rows */
+.message { display: flex; gap: 11px; align-items: flex-start; max-width: 100%; }
+.message.user-message { flex-direction: row-reverse; }
+
+.msg-avatar-icon {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+.msg-avatar-icon.ai-icon {
+  background: var(--gold-dim);
+  border: 0.5px solid var(--gold-border);
+  color: var(--gold);
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-style: italic;
+}
+.msg-avatar-icon.user-icon {
+  background: rgba(55, 138, 221, 0.12);
+  border: 0.5px solid rgba(55, 138, 221, 0.2);
+  color: #7BAED4;
+}
+
+.message-content {
+  max-width: 72%;
+  padding: 13px 17px;
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  line-height: 1.7;
+  word-break: break-word;
+}
+.ai-message .message-content {
+  background: var(--navy-surface);
+  border: 0.5px solid var(--navy-border);
+  color: var(--text-primary);
+  border-top-left-radius: 4px;
+}
+.user-message .message-content {
+  background: var(--gold-dim);
+  border: 0.5px solid var(--gold-border);
+  color: var(--text-primary);
+  border-top-right-radius: 4px;
+}
+
+/* Markdown rendering inside AI messages */
+.ai-message .message-content h1,
+.ai-message .message-content h2,
+.ai-message .message-content h3 {
+  font-family: var(--font-serif);
+  color: var(--gold-light);
+  font-weight: 400;
+  margin: 12px 0 6px;
+  line-height: 1.3;
+}
+.ai-message .message-content h1 { font-size: 18px; }
+.ai-message .message-content h2 { font-size: 16px; }
+.ai-message .message-content h3 { font-size: 14.5px; }
+
+.ai-message .message-content p { margin-bottom: 10px; }
+.ai-message .message-content p:last-child { margin-bottom: 0; }
+
+.ai-message .message-content strong { color: var(--gold-light); font-weight: 600; }
+.ai-message .message-content em { font-style: italic; color: var(--text-secondary); }
+
+.ai-message .message-content ul,
+.ai-message .message-content ol {
+  margin: 8px 0 10px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.ai-message .message-content li { color: var(--text-primary); font-size: 13.5px; }
+
+.ai-message .message-content code {
+  background: var(--navy-card);
+  border: 0.5px solid var(--navy-border-md);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 12.5px;
+  color: var(--gold-light);
+  font-family: 'Courier New', monospace;
+}
+.ai-message .message-content pre {
+  background: var(--navy-card);
+  border: 0.5px solid var(--navy-border-md);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  overflow-x: auto;
+  margin: 10px 0;
+}
+.ai-message .message-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12.5px;
+}
+
+.ai-message .message-content blockquote {
+  border-left: 2px solid var(--gold-border);
+  padding-left: 12px;
+  margin: 10px 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Stock-specific inline elements */
+.ticker-tag {
+  display: inline-flex;
+  align-items: center;
+  background: var(--green-dim);
+  border: 0.5px solid var(--green-border);
+  color: var(--green);
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin: 0 2px;
+  font-family: var(--font-sans);
+  vertical-align: middle;
+}
+.price-up { color: var(--green); font-weight: 600; }
+.price-down { color: var(--red); font-weight: 600; }
+
+/* Divider between AI label and content */
+.ai-message .msg-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 7px;
+  padding-bottom: 7px;
+  border-bottom: 0.5px solid var(--navy-border);
+}
+.ai-message .msg-meta-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ai-message .msg-meta-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* Typing indicator */
+.typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 0;
+}
+.typing-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.7;
+  animation: typing-bounce 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ============================================================
+   INPUT AREA
+   ============================================================ */
+{% comment %} .chat-input-section {
+  padding: 14px 24px 18px;
+  background: var(--navy-mid);
+  border-top: 0.5px solid var(--navy-border);
+  flex-shrink: 0;
+}
+.input-wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  background: var(--navy-card);
+  border: 0.5px solid var(--navy-border-md);
+  border-radius: var(--radius-lg);
+  padding: 11px 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-wrapper:focus-within {
+  border-color: var(--gold-border);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.06);
+} {% endcomment %}
+#aiPromptInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  line-height: 1.55;
+  max-height: 130px;
+  min-height: 22px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--navy-border) transparent;
+}
+#aiPromptInput::placeholder { color: var(--text-muted); }
+#aiPromptInput::-webkit-scrollbar { width: 3px; }
+#aiPromptInput::-webkit-scrollbar-thumb { background: var(--navy-border); border-radius: 2px; }
+
+{% comment %} .send-btn {
+  width: 36px; height: 36px;
+  background: var(--gold);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--navy);
+  font-size: 14px;
+  flex-shrink: 0;
+  transition: background 0.18s, transform 0.1s;
+}
+.send-btn:hover { background: var(--gold-light); }
+.send-btn:active { transform: scale(0.93); }
+.send-btn:disabled { background: var(--navy-elevated); color: var(--text-muted); cursor: not-allowed; } {% endcomment %}
+
+.ai-disclaimer {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 10px;
+  letter-spacing: 0.01em;
+}
+.ai-disclaimer::before {
+  content: '⚠';
+  margin-right: 5px;
+  opacity: 0.5;
+}
+
+/* ============================================================
+   MESSAGE ENTRY ANIMATION
+   ============================================================ */
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.message { animation: msg-in 0.22s ease-out both; }
+
+/* ============================================================
+   RESPONSIVE — Narrow sidebar on small screens
+   ============================================================ */
+@media (max-width: 700px) {
+  :root { --sidebar-w: 0px; }
+  .chrysalis-sidebar { display: none; }
+}
+</style>
+
+<div class="chrysalis-app-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="chrysalis-sidebar">
+    <div class="sidebar-top">
+
+      {% comment %} <div class="sidebar-brand">
+        <div class="brand-icon">🦋</div>
+        <div class="brand-wordmark">Chry<strong>salis</strong></div>
+      </div> {% endcomment %}
+
+       <br>
+      <br>
+      <button class="new-chat-btn" onclick="startNewChat()">
+        <i class="fa fa-plus-circle"></i> New Chat
+      </button>
+
+      <h4 class="section-title">Recent Conversations</h4>
+      <div class="chat-history-list" id="chatHistoryList">
+        <!-- Populated by JS -->
+      </div>
+
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="user-profile-block">
+        <div class="user-avatar">
+          {{ request.user.first_name|slice:1 }}{{ request.user.last_name|slice:1 }}
+        </div>
+        <span class="user-name">{{ request.user.get_full_name|default:request.user.email }}</span>
+      </div>
+      <a href="#" class="settings-link">
+        <i class="fa fa-cog"></i> Settings
+      </a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN CHAT ═══ -->
+  <main class="chrysalis-chat-area">
+
+    <header class="chat-header">
+      <div class="chat-title" id="currentChatTitle">Financial Intelligence Assistant</div>
+      <div class="model-selector-wrapper">
+        <div class="model-status-dot"></div>
+        <span class="model-label">Model:</span>
+        <select class="model-selector">
+          <option>Chrysalis-2.0 (Grok)</option>
+        </select>
+      </div>
+    </header>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chatMessages">
+      <div class="welcome-message" id="welcomeMessage">
+        <h1 class="center-hero-logo">
+           <span class="ve-logo-text">Chry<strong>salis</strong></span>
+        </h1>
+        <p>Your intelligent guide to the Nigerian Stock Market</p>
+        <small>Try asking me anything:</small>
+        <div class="suggestion-chips">
+          <div class="suggestion-chip" onclick="useSuggestion(this)">What's the current price and outlook for UBA?</div>
+          <div class="suggestion-chip" onclick="useSuggestion(this)">Should I consider buying ACCESSCORP now?</div>
+          <div class="suggestion-chip" onclick="useSuggestion(this)">Explain PE Ratio and EPS in simple terms</div>
+          <div class="suggestion-chip" onclick="useSuggestion(this)">Top performing stocks today?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-section">
+      <div class="input-wrapper">
+        <textarea
+          id="aiPromptInput"
+          rows="1"
+          placeholder="Ask about any stock, market trend, or financial term..."
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}">
+        </textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send (Enter)">
+          <i class="fa fa-paper-plane"></i>
+        </button>
+      </div>
+      <p class="ai-disclaimer">
+        Chrysalis AI is for educational purposes only — not financial advice
+      </p>
+    </div>
+
+  </main>
+</div>
+
+<!-- Marked.js for markdown rendering -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://unpkg.com/htmx.org@2/dist/htmx.min.js"></script>
+
+<script>
+/* ============================================================
+   CHRYSALIS AI — FRONTEND LOGIC
+   ============================================================ */
+
+// Configure marked for safe output
+marked.setOptions({
+  breaks: true,
+  gfm: true,
+});
+
+let currentThreadId = null;
+
+/* ── Helpers ── */
+function scrollToBottom(smooth = true) {
+  const el = document.getElementById('chatMessages');
+  el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
+}
+
+function now() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+/* ── Load sidebar history ── */
+function loadChatHistory() {
+  fetch("{% url 'chat_history_api' %}")
+    .then(r => r.json())
+    .then(threads => {
+      const list = document.getElementById('chatHistoryList');
+      list.innerHTML = '';
+
+      if (threads.length === 0) {
+        list.innerHTML = `<p style="font-size:12px;color:var(--text-muted);padding:8px 4px;">No conversations yet.</p>`;
+        return;
+      }
+
+      threads.forEach(t => {
+        const el = document.createElement('div');
+        el.className = 'chat-history-item' + (t.id === currentThreadId ? ' active' : '');
+        el.dataset.threadId = t.id;
+
+        el.innerHTML = `
+          <div class="chat-preview">
+            <strong>${escapeHtml(t.title)}</strong>
+            <small>${escapeHtml(t.last_message)}</small>
+          </div>
+          <div class="chat-item-right">
+            <small class="chat-time">${escapeHtml(t.time)}</small>
+            <button
+              class="delete-chat-btn"
+              title="Delete conversation"
+              aria-label="Delete conversation"
+            >&#10005;</button>
+          </div>`;
+
+        // Load thread on row click — but NOT when clicking the delete button
+        el.addEventListener('click', (e) => {
+          if (e.target.closest('.delete-chat-btn')) return;
+          loadThread(t.id);
+        });
+
+        // Delete button click
+        el.querySelector('.delete-chat-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          confirmDeleteChat(t.id, t.title, el);
+        });
+
+        list.appendChild(el);
+      });
+    })
+    .catch(() => {}); // silent fail on sidebar
+}
+
+/* ── Confirm-then-delete modal ── */
+function confirmDeleteChat(threadId, threadTitle, rowEl) {
+  // Build modal
+  const overlay = document.createElement('div');
+  overlay.className = 'chrysalis-modal-overlay';
+  overlay.innerHTML = `
+    <div class="chrysalis-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-icon">🗑</div>
+      <div class="modal-title" id="modal-title">Delete conversation?</div>
+      <div class="modal-body">
+        "<strong style="color:var(--text-primary)">${escapeHtml(threadTitle)}</strong>"
+        will be permanently deleted. This cannot be undone.
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" id="modalCancel">Cancel</button>
+        <button class="modal-btn confirm-delete" id="modalConfirm">Delete</button>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+  document.getElementById('modalCancel').focus();
+
+  // Close on overlay backdrop click
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal(overlay);
+  });
+
+  // Escape key
+  const escHandler = (e) => { if (e.key === 'Escape') closeModal(overlay); };
+  document.addEventListener('keydown', escHandler);
+
+  document.getElementById('modalCancel').onclick = () => closeModal(overlay);
+
+  document.getElementById('modalConfirm').onclick = () => {
+    closeModal(overlay);
+    deleteChat(threadId, rowEl);
+  };
+
+  overlay._escHandler = escHandler; // store ref for cleanup
+}
+
+function closeModal(overlay) {
+  document.removeEventListener('keydown', overlay._escHandler);
+  overlay.style.opacity = '0';
+  overlay.style.transition = 'opacity 0.15s';
+  setTimeout(() => overlay.remove(), 150);
+}
+
+/* ── Delete Chat ── */
+function deleteChat(threadId, rowEl) {
+  // Animate the row out immediately — optimistic UI
+  if (rowEl) rowEl.classList.add('deleting');
+
+  fetch(`{% url 'delete_chat_thread' 0 %}`.replace('0', threadId), {
+    method: 'POST',
+    headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'success') {
+      // If the deleted thread was open, reset to welcome screen
+      if (currentThreadId === threadId) {
+        startNewChat();
+      }
+      // Let animation finish, then reload sidebar
+      setTimeout(() => loadChatHistory(), 260);
+    } else {
+      // Rollback animation on failure
+      if (rowEl) rowEl.classList.remove('deleting');
+      showToast(data.message || 'Failed to delete chat', 'error');
+    }
+  })
+  .catch(() => {
+    if (rowEl) rowEl.classList.remove('deleting');
+    showToast('Network error — please try again.', 'error');
+  });
+}
+
+/* ── Toast notification (replaces alert) ── */
+function showToast(message, type = 'info') {
+  const existing = document.getElementById('chrysalis-toast');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.id = 'chrysalis-toast';
+  toast.style.cssText = `
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    background: ${type === 'error' ? 'var(--red-dim)' : 'var(--navy-card)'};
+    border: 0.5px solid ${type === 'error' ? 'rgba(252,107,107,0.3)' : 'var(--navy-border-md)'};
+    color: ${type === 'error' ? 'var(--red)' : 'var(--text-primary)'};
+    padding: 10px 20px; border-radius: 20px;
+    font-size: 13px; font-family: var(--font-sans);
+    z-index: 2000; white-space: nowrap;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    animation: msg-in 0.2s ease-out;
+  `;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; }, 2700);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+/* ── Load a thread ── */
+function loadThread(threadId) {
+  currentThreadId = threadId;
+  const container = document.getElementById('chatMessages');
+  container.innerHTML = '<div class="message ai-message"><div class="message-content"><div class="typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>';
+
+  fetch(`{% url 'chat_thread_detail' 0 %}`.replace('0', threadId))
+    .then(r => r.json())
+    .then(data => {
+      container.innerHTML = '';
+      data.messages.forEach(msg => {
+        container.innerHTML += buildUserBubble(msg.query);
+        container.innerHTML += buildAiBubble(msg.response);
+      });
+      document.getElementById('currentChatTitle').textContent = data.messages[0]?.query?.slice(0, 50) || 'Conversation';
+      scrollToBottom(false);
+      loadChatHistory();
+    });
+}
+
+/* ── New chat ── */
+function startNewChat() {
+  currentThreadId = null;
+  const container = document.getElementById('chatMessages');
+  const welcome = document.getElementById('welcomeMessage');
+  if (welcome) {
+    // already on welcome
+  } else {
+    container.innerHTML = `
+      <div class="welcome-message" id="welcomeMessage">
+        <div class="welcome-logo">🦋</div>
+        <h2>Welcome to Chrysalis AI</h2>
+        <p>Your intelligent guide to the Nigerian Stock Market</p>
+        <small>Try asking me anything:</small>
+        <div class="suggestion-chips">
+          <div class="suggestion-chip" onclick="useSuggestion(this)">What's the current price and outlook for UBA?</div>
+          <div class="suggestion-chip" onclick="useSuggestion(this)">Should I consider buying ACCESSCORP now?</div>
+          <div class="suggestion-chip" onclick="useSuggestion(this)">Explain PE Ratio and EPS in simple terms</div>
+          <div class="suggestion-chip" onclick="useSuggestion(this)">Top performing stocks today?</div>
+        </div>
+      </div>`;
+  }
+  document.getElementById('currentChatTitle').textContent = 'Financial Intelligence Assistant';
+  loadChatHistory();
+}
+
+/* ── Suggestion chips ── */
+function useSuggestion(el) {
+  document.getElementById('aiPromptInput').value = el.textContent.trim();
+  sendMessage();
+}
+
+/* ── Build bubbles ── */
+function buildUserBubble(text) {
+  return `<div class="message user-message">
+    <div class="msg-avatar-icon user-icon">U</div>
+    <div class="message-content">${escapeHtml(text)}</div>
+  </div>`;
+}
+
+function buildAiBubble(markdown) {
+  const rendered = marked.parse(markdown || '');
+  return `<div class="message ai-message">
+    <div class="msg-avatar-icon ai-icon">C</div>
+    <div class="message-content">
+      <div class="msg-meta">
+        <span class="msg-meta-label">Chrysalis</span>
+        <span class="msg-meta-time">${now()}</span>
+      </div>
+      ${rendered}
+    </div>
+  </div>`;
+}
+
+/* ── Send message ── */
+function sendMessage() {
+  const input = document.getElementById('aiPromptInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const message = input.value.trim();
+  if (!message) return;
+
+  // Remove welcome if present
+  const welcome = document.getElementById('welcomeMessage');
+  if (welcome) welcome.remove();
+
+  const container = document.getElementById('chatMessages');
+
+  // User bubble
+  container.insertAdjacentHTML('beforeend', buildUserBubble(message));
+  scrollToBottom();
+  input.value = '';
+  input.style.height = 'auto';
+  sendBtn.disabled = true;
+
+  // Typing indicator
+  const loadingId = 'loading-' + Date.now();
+  container.insertAdjacentHTML('beforeend', `
+    <div class="message ai-message" id="${loadingId}">
+      <div class="msg-avatar-icon ai-icon">C</div>
+      <div class="message-content">
+        <div class="typing">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+    </div>`);
+  scrollToBottom();
+
+  fetch("{% url 'chat_api' %}", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token }}'
+    },
+    body: JSON.stringify({ message, thread_id: currentThreadId })
+  })
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById(loadingId)?.remove();
+    container.insertAdjacentHTML('beforeend', buildAiBubble(data.response));
+    currentThreadId = data.thread_id;
+    if (data.title) document.getElementById('currentChatTitle').textContent = data.title;
+    scrollToBottom();
+    loadChatHistory();
+  })
+  .catch(() => {
+    const el = document.getElementById(loadingId);
+    if (el) el.innerHTML = `
+      <div class="msg-avatar-icon ai-icon">C</div>
+      <div class="message-content" style="border-color: rgba(252,107,107,0.25);">
+        <div class="msg-meta"><span class="msg-meta-label" style="color:var(--red)">Error</span></div>
+        <p>Couldn't reach the server. Please try again.</p>
+      </div>`;
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    input.focus();
+  });
+}
+
+/* ── XSS helper ── */
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/* ── Init ── */
+document.addEventListener('DOMContentLoaded', () => {
+  const textarea = document.getElementById('aiPromptInput');
+
+  // Auto-grow textarea
+  textarea.addEventListener('input', function () {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 130) + 'px';
+  });
+
+  // Populate sidebar
+  loadChatHistory();
+});
+</script>
+
+{% endblock content %}

@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Chrysalis - Premium financial Literacy and investment Onboarding Platform">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Chrysalis - Financial Literacy &amp; Investment Onboarding Platform</title>
+
+    <link rel="icon" href="{% static 'img/core-img/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom-override.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/chat-css.css' %}"> {% endcomment %}
+</head>
+
+<body>
+    <!-- Preloader -->
+   <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+    </div>
+
+    <!-- ===== NAVBAR (single dark bar, logo left, nav center, CTA right) ===== -->
+    <header class="ve-header" id="ve-sticky">
+        <div class="container-fluid ve-nav-wrap">
+            <!-- Logo -->
+            <div class="ve-logo">
+                <a href="index.html">
+                    <span class="ve-logo-icon">C</span>
+                    <span class="ve-logo-text">Chry<strong>salis</strong></span>
+                </a>
+            </div>
+
+        {% if user.is_authenticated %}    
+            <nav class="ve-nav">
+                <ul>
+                    <li><a href="home.html" class="active">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="Learn.html">Learning Modules</a></li>
+                    <li><a href="{% url 'paper-wallet' %}">Paper Trading</a></li>
+
+                    <li><a href="{% url 'chat_page' %}">Chrysalis AI</a></li>
+                </ul>
+            </nav>
+        {% endif %}
+
+
+            <!-- CTA -->
+            
+            <div class="ve-nav-cta">
+                {% block header_action %}
+                    {% if user.is_authenticated %}
+                        <!-- Displayed only when the user is logged in -->
+                        <a href="#" class="ve-btn-ghost">{{user.first_name}}</a>
+                        <a href="{% url 'logout' %}" class="ve-cta-btn"> 
+                            Logout <i class="fa fa-sign-out"></i>
+                        </a>
+                    {% else %}
+                        <!-- Default content for guests -->
+                        <a href="{% url 'login' %}" class="ve-cta-btn"> 
+                            Login / Register <i class="fa fa-arrow-right"></i>
+                        </a>
+                    {% endif %}
+                {% endblock header_action %}
+            </div>
+
+
+            <!-- Mobile Toggle -->
+            <button class="ve-toggler" id="ve-toggle">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+
+        {% block header_action_mobile %}
+        <div class="ve-mobile-menu" id="ve-mobile-menu">
+            <ul>
+                {% if user.is_authenticated %}    
+                    <li><a href="home.html" class="active">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    
+                    <li><a href="Learn.html">Learning Modules</a></li>
+                    
+                    <li><a href="{% url 'paper-wallet' %}">Paper Trading</a></li>
+                    
+                    <li><a href="{% url 'chat_page' %}">Chrysalis AI</a></li>
+
+                    <li><a href="#" class="ve-btn-ghost">{{user.first_name}}</a></li>
+                    <li><a href="{% url 'logout' %}" class="ve-cta-btn">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="ve-cta-btn"> 
+                            Login / Register <i class="fa fa-arrow-right"></i>
+                        </a></li>
+                {% endif %}
+                </ul>
+            </div>
+
+        {% endblock header_action_mobile %}
+    </header>
+
+    <main>
+        <div class="container mt-3">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% block content %}
+    
+    
+    {% endblock content %}
+    </main>
+
+    </footer>
+
+
+    <!-- Scripts -->
+    <script src="{% static 'js/jquery/jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plugins/plugins.js' %}"></script>
+    <script src="{% static 'js/active.js' %}"></script>
+    <script src="{% static 'js/vaultedge.js' %}"></script>
+</body>
+</html>
+

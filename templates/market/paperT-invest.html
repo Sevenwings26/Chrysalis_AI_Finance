@@ -1,0 +1,229 @@
+{% extends "util/base.html" %}
+{% load humanize %}
+{% block content %}
+
+    <div class="pt-dashboard">
+        
+        <aside class="pt-sidebar">
+            <div>
+                <ul class="pt-sidebar-nav">
+                    <li><a href="{% url 'paper-wallet' %}" class="active"><i class="fa fa-wallet"></i> Wallet</a></li>
+                    <li><a href="{% url 'portfolio' %}"><i class="fa fa-chart-pie"></i> Portfolio</a></li>
+                    <li><a href="{% url 'history' %}"><i class="fa fa-history"></i> History</a></li>
+                    <li><a href="{% url 'stock-list' %}"><i class="fa fa-chart-line"></i> Invest</a></li>
+                </ul>
+            </div>
+
+            <div class="pt-sidebar-bottom">
+                <div class="pt-user-profile">
+                    <div class="pt-user-avatar">EH</div>
+                    <div class="pt-user-info">
+                        <span class="pt-user-name">{{user.first_name}} {{user.last_name}}</span>
+                        <span class="pt-user-role">Student Account</span>
+                    </div>
+                </div>
+                <a href="#" class="pt-settings-link"><i class="fa fa-cog"></i> Settings</a>
+            </div>
+        </aside>
+
+
+        <main class="pt-main">
+            
+            <header class="pt-header">
+                <h1>Welcome, {{user.first_name}} {{user.last_name}}</h1>
+                <p>Paper Trading Simulation Environment</p>
+            </header>
+
+            <div id="dynamic-view">
+                <div class="pt-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                        <div>
+                            <h2 class="pt-card-title" style="margin-bottom: 5px;">Recommended Stocks (NGX)</h2>
+                            <span style="color: #94A3B8; font-size: 14px;">Live market data from Nigerian Exchange</span>
+                        </div>
+                        <button style="background: rgba(16, 185, 129, 0.2); color: #10B981; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer;">
+                            See all {{ stocks|length }} Equities
+                        </button>
+                    </div>
+
+                    {% comment %} <table class="pt-table">
+                        <thead>
+                            <tr>
+                                <th>Stock</th>
+                                <th>Stock Price</th>
+                                <th>% Change</th>
+                                <th>Upside Potential</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for stock in stocks %}
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        {{ stock.symbol }}
+                                    </strong>
+
+                                    <br>
+
+                                    <span
+                                        style="
+                                            color: #94A3B8;
+                                            font-size: 12px;
+                                        "
+                                    >
+                                        {{ stock.name }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    ₦{{ stock.price }}
+                                </td>
+
+                                <td>
+
+                                    {% if stock.change_percent >= 0 %}
+
+                                        <span style="color: #10B981;">
+                                            +{{ stock.change_percent }}%
+                                        </span>
+
+                                    {% else %}
+
+                                        <span style="color: #EF4444;">
+                                            {{ stock.change_percent }}%
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {% if stock.upside_potential >= 0 %}
+
+                                        <span style="color: #10B981;">
+                                            ↑ +{{ stock.upside_potential }}%
+                                        </span>
+
+                                    {% else %}
+
+                                        <span style="color: #EF4444;">
+                                            ↓ {{ stock.upside_potential }}%
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {% if stock.recommendation == "BUY" %}
+
+                                        <button class="pt-btn pt-btn-buy">
+                                            Buy
+                                        </button>
+
+                                    {% elif stock.recommendation == "SELL" %}
+
+                                        <button class="pt-btn pt-btn-sell">
+                                            Sell
+                                        </button>
+
+                                    {% else %}
+
+                                        <button class="pt-btn">
+                                            Hold
+                                        </button>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="5">
+                                    No stocks available
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                            </tbody>
+                    </table> {% endcomment %}
+
+                    <table class="pt-table">
+                        <thead>
+                            <tr>
+                                <th>Stock</th>
+                                <th>Price</th>
+                                <th>% Change</th>
+                                <th>Upside</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stock in stocks %}
+                            <tr>
+                                <td>
+                                    <strong>{{ stock.symbol }}</strong><br>
+                                    <small style="color: #94A3B8;">{{ stock.name }}</small>
+                                </td>
+
+                                <!-- Price with Commas -->
+                                <td>₦{{ stock.price|intcomma }}</td>
+
+                                <!-- Percent Change with Color Coding -->
+                                <td>
+                                    <span style="color: {% if stock.change_percent >= 0 %}#10B981{% else %}#EF4444{% endif %};">
+                                        {% if stock.change_percent > 0 %}+{% endif %}{{ stock.change_percent|floatformat:2 }}%
+                                    </span>
+                                </td>
+
+                                <!-- Upside Potential -->
+                                <td>
+                                    <span style="color: {% if stock.upside_potential >= 0 %}#10B981{% else %}#EF4444{% endif %};">
+                                        {% if stock.upside_potential >= 0 %}↑{% else %}↓{% endif %} 
+                                        {{ stock.upside_potential|floatformat:1 }}%
+                                    </span>
+                                </td>
+
+                                <!-- Dynamic Buttons based on Recommendation -->
+                                <td>
+                                    {% if "BUY" in stock.recommendation %}
+                                        <button class="pt-btn pt-btn-buy">Buy</button>
+                                    {% elif "SELL" in stock.recommendation %}
+                                        <button class="pt-btn pt-btn-sell">Sell</button>
+                                    {% else %}
+                                        <button class="pt-btn">Hold</button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 20px;">
+                                    {% if api_failed %}
+                                        <span style="color: #EF4444;">Market data currently unavailable.</span>
+                                    {% else %}
+                                        No stocks found.
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+{% endblock content %}
