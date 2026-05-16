@@ -74,9 +74,11 @@ It enables users to explore NGX stocks, simulate trading with a virtual wallet, 
 Create a `.env` file:
 
 ```env
+DATABASE_URL=your_external_db_link
 NGX_API_KEY=your_api_key_here
 SECRET_KEY=your_django_secret
 DEBUG=True
+GEMINI_API_KEY
 EMAIL_HOST_USER=mail.com 
 EMAIL_HOST_PASSWORD=emailcssaaw11om
 
@@ -87,15 +89,17 @@ EMAIL_HOST_PASSWORD=emailcssaaw11om
 ## ⚙️ Installation
 
 ```bash
-git clone https://github.com/your-org/chrysalis-ai.git
-cd chrysalis-ai
+git clone git@github.com:Sevenwings26/Chrysalis_AI_Finance.git
+cd chrysalis-ai-finance
 
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+venv\Scripts\activate  # Mac: source venv/bin/activate  
 
 pip install -r requirements.txt
 
+python manage.py makemigrations
 python manage.py migrate
+
 python manage.py runserver
 ```
 
@@ -139,7 +143,3 @@ python manage.py runserver
 * [ ] Mobile API layer (FastAPI extension)
 
 
-## 👨‍💻 Author
-
-Built by **Iyanu Arowosola**
-Backend/ML Engineer | AI Systems Developer 
