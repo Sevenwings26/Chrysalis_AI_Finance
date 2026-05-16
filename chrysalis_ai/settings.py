@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     # created apps 
-    "main",
+    "learn",
     "users",
     "market",
     'ai_tool',
@@ -144,7 +144,7 @@ MEDIA_URL = '/media/'
 
 NGX_API_KEY = config("NGX_API_KEY")
 BASE_URL = "https://www.ngxpulse.ng/api/ngxdata/stocks"
-GROK_API_KEY=config("GROK_API_KEY")
+# GROK_API_KEY=config("GROK_API_KEY")
 
 GEMINI_API_KEY=config("GEMINI_API_KEY")
 

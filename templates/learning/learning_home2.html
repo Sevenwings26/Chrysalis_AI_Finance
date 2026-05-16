@@ -1,0 +1,235 @@
+{% extends "util/base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <!-- Hero Section -->
+    <section class="ve-page-hero" style="background-image:url({% static 'img/bg-img/24.png' %});">
+        <div class="ve-page-hero-overlay"></div>
+        <div class="container ve-page-hero-content">
+            <span class="ve-section-tag">Knowledge Hub</span>
+            <h1>Financial <span>Literacy Hub</span></h1>
+            <nav aria-label="breadcrumb">
+                <ol class="ve-breadcrumb">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li class="active">Learn</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <section class="ve-section">
+        <div class="container">
+            <div class="row">
+
+                <!-- Main Content -->
+                <div class="col-12 col-lg-8">
+                    <div class="row">
+
+                        {% for video in all_videos %}
+                        <div class="col-12 col-md-6 wow fadeInUp" data-wow-delay="{{ forloop.counter|add:100 }}ms">
+                            <div class="ve-insight-card">
+                                <div class="ve-insight-img bg-img" 
+                                     style="background-image:url({% if video.thumbnail %}{{ video.thumbnail.url }}{% else %}{% static 'img/bg-img/default-video.jpg' %}{% endif %});">
+                                    <div class="play-button-overlay"><i class="fa fa-play-circle"></i></div>
+                                </div>
+                                <div class="ve-insight-body">
+                                    <span class="ve-insight-cat">{{ video.category.name }}</span>
+                                    <h5>
+                                        <a href="{% url 'learning:video_detail' video.slug %}">
+                                            {{ video.title }}
+                                        </a>
+                                    </h5>
+                                    <p>{{ video.description|truncatewords:25 }}</p>
+                                    <div class="ve-insight-meta">
+                                        <span><i class="fa fa-clock-o"></i> {{ video.duration }}</span>
+                                        <a href="{% url 'learning:video_detail' video.slug %}">
+                                            Watch Video <i class="fa fa-play"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="ve-pagination">
+                        <!-- You can implement proper pagination later with Django Paginator -->
+                        <a href="#" class="active">1</a>
+                        <a href="#">2</a>
+                        <a href="#">3</a>
+                        <a href="#"><i class="fa fa-chevron-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-12 col-lg-4">
+                    <div class="ve-sidebar">
+
+                        <!-- Search -->
+                        <div class="ve-sidebar-widget">
+                            <h5 class="ve-sidebar-title">Search Modules</h5>
+                            <div class="ve-search-box">
+                                <input type="text" id="videoSearch" placeholder="Search topics or terms...">
+                                <button><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Curriculum -->
+                        <div class="ve-sidebar-widget">
+                            <h5 class="ve-sidebar-title">Curriculum</h5>
+                            <ul class="ve-cat-list">
+                                {% for category in categories %}
+                                <li>
+                                    <a href="#">{{ category.name }} <span>{{ category.videos.count }}</span></a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- Recently Added -->
+                        <div class="ve-sidebar-widget">
+                            <h5 class="ve-sidebar-title">Recently Added</h5>
+                            {% for video in featured_videos %}
+                            <div class="ve-recent-post">
+                                <div class="ve-rp-img bg-img" 
+                                     style="background-image:url({% if video.thumbnail %}{{ video.thumbnail.url }}{% else %}{% static 'img/bg-img/default-video.jpg' %}{% endif %});"></div>
+                                <div>
+                                    <a href="{% url 'learning:video_detail' video.slug %}">{{ video.title }}</a>
+                                    <span><i class="fa fa-clock-o"></i> {{ video.duration }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="ve-sidebar-widget">
+                            <h5 class="ve-sidebar-title">Module Tags</h5>
+                            <div class="ve-tags">
+                                <a href="#">NGX</a>
+                                <a href="#">Risk</a>
+                                <a href="#">Diversification</a>
+                                <a href="#">Equities</a>
+                                <a href="#">Inflation</a>
+                                <a href="#">Compound Interest</a>
+                                <a href="#">Agentic AI</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="ve-newsletter-section">
+        <div class="container">
+            <div class="ve-newsletter-wrap">
+                <div class="ve-nl-left">
+                    <i class="fa fa-envelope-o"></i>
+                    <div>
+                        <h3>Stay Ahead of the Markets</h3>
+                        <p>Weekly insights — straight to your inbox.</p>
+                    </div>
+                </div>
+                <div class="ve-nl-right">
+                    <form class="ve-nl-form" action="#" method="post">
+                        <input type="email" placeholder="Enter your email address" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Modal -->
+    <div id="courseVideoModal" class="custom-video-modal">
+        <div class="modal-wrapper">
+            <span class="close-modal-btn" onclick="closeVideo()">× Close</span>
+            <video id="courseVideoPlayer" controls controlsList="nodownload">
+                <source src="" type="video/mp4">
+                Your browser does not support HTML5 video.
+            </video>
+        </div>
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script>
+    /* ── Video Modal ── */
+    function playVideo(videoSourceUrl, videoId) {
+        const modal  = document.getElementById('courseVideoModal');
+        const player = document.getElementById('courseVideoPlayer');
+
+        player.src = videoSourceUrl;
+        modal.style.display = 'flex';
+        player.play();
+
+        // Mark as watched via AJAX (logged-in users)
+        {% if request.user.is_authenticated %}
+        if (videoId) {
+            fetch(`/learn/video/${videoId}/watch/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+            });
+        }
+        {% endif %}
+    }
+
+    function closeVideo() {
+        const modal  = document.getElementById('courseVideoModal');
+        const player = document.getElementById('courseVideoPlayer');
+        player.pause();
+        player.src = '';
+        modal.style.display = 'none';
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('courseVideoModal').addEventListener('click', function(e) {
+        if (e.target === this) closeVideo();
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVideo(); });
+
+    /* ── Live Search + Category Filter ── */
+    function filterCards() {
+        const query   = (document.getElementById('sidebarSearch')?.value ||
+                         document.getElementById('mobileSearch')?.value || '').toLowerCase();
+        const activeCat = document.querySelector('.ve-cat-filter.active')?.dataset.cat || 'all';
+
+        const cards   = document.querySelectorAll('.video-card-col');
+        let   visible = 0;
+
+        cards.forEach(card => {
+            const titleMatch = card.dataset.title.includes(query);
+            const catMatch   = activeCat === 'all' || card.dataset.category === activeCat;
+            const show       = titleMatch && catMatch;
+            card.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    // Wire up search inputs
+    ['sidebarSearch', 'mobileSearch'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', filterCards);
+    });
+
+    // Wire up category filters (sidebar + tags)
+    document.querySelectorAll('.ve-cat-filter').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.ve-cat-filter').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            // Mirror the search inputs to keep their value
+            filterCards();
+        });
+    });
+    </script>
+
+{% endblock content %}

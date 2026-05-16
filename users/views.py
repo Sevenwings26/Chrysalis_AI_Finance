@@ -19,6 +19,12 @@ from django.contrib.auth.views import (
     PasswordResetCompleteView
 )
 
+# landing page 
+def index(requests):
+    return render(requests, 'index.html')
+
+# def about(requests):
+#     return render(requests, 'about.html')
 
 # ============== REGISTER ==============
 def register_view(request):

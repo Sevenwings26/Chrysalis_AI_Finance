@@ -36,9 +36,9 @@
         {% if user.is_authenticated %}    
             <nav class="ve-nav">
                 <ul>
-                    <li><a href="home.html" class="active">Home</a></li>
+                    <li><a href="{% url 'index' %}" class="active">Home</a></li>
                     <li><a href="#about">About</a></li>
-                    <li><a href="Learn.html">Learning Modules</a></li>
+                    <li><a href="{% url 'learning_home' %}">Learning Modules</a></li>
                     <li><a href="{% url 'paper-wallet' %}">Paper Trading</a></li>
 
                     <li><a href="{% url 'chat_page' %}">Chrysalis AI</a></li>
@@ -77,10 +77,10 @@
         <div class="ve-mobile-menu" id="ve-mobile-menu">
             <ul>
                 {% if user.is_authenticated %}    
-                    <li><a href="home.html" class="active">Home</a></li>
+                    <li><a href="{% url 'index' %}" class="active">Home</a></li>
                     <li><a href="#about">About</a></li>
                     
-                    <li><a href="Learn.html">Learning Modules</a></li>
+                    <li><a href="{% url 'learning_home' %}">Learning Modules</a></li>
                     
                     <li><a href="{% url 'paper-wallet' %}">Paper Trading</a></li>
                     
@@ -115,8 +115,6 @@
     
     {% endblock content %}
     </main>
-
-    </footer>
 
 
     <!-- Scripts -->

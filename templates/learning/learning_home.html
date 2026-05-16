@@ -1,0 +1,309 @@
+{% extends "util/base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <!-- ===== PAGE HERO ===== -->
+    <section class="ve-page-hero" style="background-image:url({% static 'img/bg-img/24.png' %});">
+        <div class="ve-page-hero-overlay"></div>
+        <div class="container ve-page-hero-content">
+            <span class="ve-section-tag">Knowledge Hub</span>
+            <h1>Financial <span>Literacy Hub</span></h1>
+            <nav aria-label="breadcrumb">
+                <ol class="ve-breadcrumb">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li class="active">Learn</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <section class="ve-section">
+        <div class="container">
+            <div class="row">
+
+                <!-- ── LEFT: VIDEO GRID ── -->
+                <div class="col-12 col-lg-8">
+
+                    <!-- Search bar (mobile-visible, mirrors sidebar on small screens) -->
+                    <div class="ve-search-box d-lg-none mb-4">
+                        <input type="text" id="mobileSearch" placeholder="Search topics or terms...">
+                        <button><i class="fa fa-search"></i></button>
+                    </div>
+
+                    <div class="row" id="videoGrid">
+
+                        {% for video in all_videos %}
+                        <div class="col-12 col-md-6 wow fadeInUp video-card-col"
+                             data-wow-delay="{{ forloop.counter0 }}00ms"
+                             data-title="{{ video.title|lower }}"
+                             data-category="{{ video.category.slug }}">
+
+                            <div class="ve-insight-card">
+
+                                <!-- Thumbnail -->
+                                <div class="ve-insight-img bg-img"
+                                     style="background-image: url({% if video.thumbnail %}{{ video.thumbnail.url }}{% else %}{% static 'img/bg-img/placeholder.jpg' %}{% endif %});">
+                                    <div class="play-button-overlay">
+                                        <i class="fa fa-play-circle"></i>
+                                    </div>
+
+                                    {% if video.is_featured %}
+                                    <span class="ve-featured-badge">Featured</span>
+                                    {% endif %}
+
+                                    {% if request.user.is_authenticated %}
+                                        {% for progress in request.user.uservideoprogress_set.all %}
+                                            {% if progress.video_id == video.id and progress.watched %}
+                                            <span class="ve-watched-badge"><i class="fa fa-check"></i> Watched</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+
+                                <!-- Body -->
+                                <div class="ve-insight-body">
+                                    <span class="ve-insight-cat">
+                                        Module {{ video.module_number }}: {{ video.category.name }}
+                                    </span>
+
+                                    <h5>
+                                        <a href="{% url 'video_detail' video.slug %}">
+                                            {{ video.title }}
+                                        </a>
+                                    </h5>
+
+                                    <p>{{ video.description|truncatewords:20 }}</p>
+
+                                    <div class="ve-insight-meta">
+                                        <span><i class="fa fa-clock-o"></i> {{ video.duration }}</span>
+                                        <span><i class="fa fa-eye"></i> {{ video.views }} views</span>
+
+                                        {% if video.video_url %}
+                                        <a href="javascript:void(0);"
+                                           onclick="playVideo('{{ video.video_url.url }}', {{ video.id }})">
+                                            Watch Video <i class="fa fa-play"></i>
+                                        </a>
+                                        {% elif video.youtube_url %}
+                                        <a href="{{ video.youtube_url }}" target="_blank" rel="noopener">
+                                            Watch on YouTube <i class="fa fa-youtube-play"></i>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        {% empty %}
+                        <!-- Empty state -->
+                        <div class="col-12">
+                            <div class="ve-empty-state">
+                                <i class="fa fa-film"></i>
+                                <h5>No modules available yet</h5>
+                                <p>Check back soon — new content is on the way.</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div><!-- /#videoGrid -->
+
+                    <!-- No search results message (hidden by default) -->
+                    <div id="noResults" class="ve-empty-state" style="display:none;">
+                        <i class="fa fa-search"></i>
+                        <h5>No modules found</h5>
+                        <p>Try a different search term or browse by curriculum below.</p>
+                    </div>
+
+                    <!-- Pagination placeholder — swap for django-paginator when ready -->
+                    <div class="ve-pagination">
+                        <a href="#" class="active">1</a>
+                    </div>
+
+                </div><!-- /col-lg-8 -->
+
+                <!-- ── RIGHT: SIDEBAR ── -->
+                <div class="col-12 col-lg-4">
+                    <div class="ve-sidebar">
+
+                        <!-- Search -->
+                        <div class="ve-sidebar-widget">
+                            <h5 class="ve-sidebar-title">Search Modules</h5>
+                            <div class="ve-search-box">
+                                <input type="text" id="sidebarSearch" placeholder="Search topics or terms...">
+                                <button><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Curriculum (dynamic categories) -->
+                        <div class="ve-sidebar-widget">
+                            <h5 class="ve-sidebar-title">Curriculum</h5>
+                            <ul class="ve-cat-list">
+                                <li>
+                                    <a href="#" class="ve-cat-filter active" data-cat="all">
+                                        All Modules <span>{{ all_videos|length }}</span>
+                                    </a>
+                                </li>
+                                {% for cat in categories %}
+                                <li>
+                                    <a href="#" class="ve-cat-filter" data-cat="{{ cat.slug }}">
+                                        {% if cat.icon %}<i class="{{ cat.icon }}"></i> {% endif %}
+                                        {{ cat.name }}
+                                        <span>{{ cat.videos.count }}</span>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- Recently Added -->
+                        <div class="ve-sidebar-widget">
+                            <h5 class="ve-sidebar-title">Recently Added</h5>
+                            {% for video in all_videos|slice:":3" %}
+                            <div class="ve-recent-post">
+                                <div class="ve-rp-img bg-img"
+                                     style="background-image: url({% if video.thumbnail %}{{ video.thumbnail.url }}{% else %}{% static 'img/bg-img/placeholder.jpg' %}{% endif %});"></div>
+                                <div>
+                                    <a href="{% url 'video_detail' video.slug %}">{{ video.title }}</a>
+                                    <span><i class="fa fa-clock-o"></i> {{ video.duration }}</span>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <p class="ve-empty-text">No videos added yet.</p>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Module Tags (from category names) -->
+                        <div class="ve-sidebar-widget">
+                            <h5 class="ve-sidebar-title">Module Tags</h5>
+                            <div class="ve-tags">
+                                {% for cat in categories %}
+                                <a href="#" class="ve-cat-filter" data-cat="{{ cat.slug }}">
+                                    {{ cat.name }}
+                                </a>
+                                {% endfor %}
+                                {# Keep static platform tags below #}
+                                <a href="#">NGX</a>
+                                <a href="#">Paper Trading</a>
+                                <a href="#">Agentic AI</a>
+                            </div>
+                        </div>
+
+                        <!-- Progress widget (logged-in users only) -->
+                        {% if request.user.is_authenticated %}
+                        <div class="ve-sidebar-widget ve-progress-widget">
+                            <h5 class="ve-sidebar-title">Your Progress</h5>
+                            {% with total=all_videos|length watched=request.user.uservideoprogress_set.filter.watched %}
+                            <div class="ve-progress-track">
+                                <div class="ve-progress-bar"
+                                     style="width: {{ request.user.uservideoprogress_set.all|length|default:0 }}%;">
+                                </div>
+                            </div>
+                            {% endwith %}
+                            <p class="ve-progress-label">
+                                {% comment %} <strong>{{ request.user.uservideoprogress_set.filter(watched=True).count }}</strong>
+                                of <strong>{{ all_videos|length }}</strong>  {% endcomment %}
+                                modules completed
+                            </p>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div><!-- /col-lg-4 -->
+
+            </div><!-- /row -->
+        </div><!-- /container -->
+    </section>
+
+
+    <!-- ===== FOOTER ===== -->
+
+    {% include "util/footer.html" %}
+    <!-- ===== VIDEO MODAL ===== -->
+    <div id="courseVideoModal" class="custom-video-modal">
+        <div class="modal-wrapper">
+            <span class="close-modal-btn" onclick="closeVideo()">&times; Close</span>
+            <video id="courseVideoPlayer" controls>
+                <source src="" type="video/mp4">
+                Your browser does not support HTML5 video.
+            </video>
+        </div>
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script>
+    /* ── Video Modal ── */
+    function playVideo(videoSourceUrl, videoId) {
+        const modal  = document.getElementById('courseVideoModal');
+        const player = document.getElementById('courseVideoPlayer');
+
+        player.src = videoSourceUrl;
+        modal.style.display = 'flex';
+        player.play();
+
+        // Mark as watched via AJAX (logged-in users)
+        {% if request.user.is_authenticated %}
+        if (videoId) {
+            fetch(`/learn/video/${videoId}/watch/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+            });
+        }
+        {% endif %}
+    }
+
+    function closeVideo() {
+        const modal  = document.getElementById('courseVideoModal');
+        const player = document.getElementById('courseVideoPlayer');
+        player.pause();
+        player.src = '';
+        modal.style.display = 'none';
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('courseVideoModal').addEventListener('click', function(e) {
+        if (e.target === this) closeVideo();
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVideo(); });
+
+    /* ── Live Search + Category Filter ── */
+    function filterCards() {
+        const query   = (document.getElementById('sidebarSearch')?.value ||
+                         document.getElementById('mobileSearch')?.value || '').toLowerCase();
+        const activeCat = document.querySelector('.ve-cat-filter.active')?.dataset.cat || 'all';
+
+        const cards   = document.querySelectorAll('.video-card-col');
+        let   visible = 0;
+
+        cards.forEach(card => {
+            const titleMatch = card.dataset.title.includes(query);
+            const catMatch   = activeCat === 'all' || card.dataset.category === activeCat;
+            const show       = titleMatch && catMatch;
+            card.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    // Wire up search inputs
+    ['sidebarSearch', 'mobileSearch'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', filterCards);
+    });
+
+    // Wire up category filters (sidebar + tags)
+    document.querySelectorAll('.ve-cat-filter').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.ve-cat-filter').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            // Mirror the search inputs to keep their value
+            filterCards();
+        });
+    });
+    </script>
+
+{% endblock content %}

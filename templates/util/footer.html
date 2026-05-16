@@ -1,0 +1,71 @@
+        <!-- ===== NEWSLETTER ===== -->
+    <section class="ve-newsletter-section">
+        <div class="container">
+            <div class="ve-newsletter-wrap">
+                <div class="ve-nl-left">
+                    <i class="fa fa-envelope-o"></i>
+                    <div>
+                        <h3>Stay Ahead of the Markets</h3>
+                        <p>Weekly insights — straight to your inbox.</p>
+                    </div>
+                </div>
+                <div class="ve-nl-right">
+                    <form class="ve-nl-form" action="#" method="post">
+                        {% csrf_token %}
+                        <input type="email" placeholder="Enter your email address" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <footer class="ve-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-lg-4 mb-50">
+                    <div class="ve-footer-brand">
+                        <a href="{% url 'index' %}" class="ve-footer-logo">
+                            <span class="ve-logo-icon">C</span>
+                            <span class="ve-logo-text">Chry<strong>salis</strong></span>
+                        </a>
+                        <p>An integrated system combining structured education, intelligent mentorship, and risk-free simulation.</p>
+                        <div class="ve-social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-linkedin"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-2 mb-50">
+                    <h5 class="ve-footer-title">Quick Links</h5>
+                    <ul class="ve-footer-links">
+                        <li><a href="{% url 'index' %}">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="{% url 'chat_page' %}">Chrysalis AI</a></li>
+                        <li><a href="{% url 'learning_home' %}">Learning Modules</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3 mb-50">
+                    <h5 class="ve-footer-title">Our Services</h5>
+                    <ul class="ve-footer-links">
+                        <li><a href="{% url 'learning_home' %}">Take a course</a></li>
+                        <li><a href="{% url 'chat_page' %}">Agentic AI mentor</a></li>
+                        <li><a href="#">Paper Trading</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3 mb-50">
+                    <h5 class="ve-footer-title">Get In Touch</h5>
+                    <ul class="ve-footer-contact">
+                        <li><i class="fa fa-map-marker"></i> Lagos, Nigeria</li>
+                        <li><i class="fa fa-phone"></i> +234 905 486 6796</li>
+                        <li><i class="fa fa-envelope"></i> hello@chrysalis.com</li>
+                        <li><i class="fa fa-clock-o"></i> Mon–Fri, 9am – 5pm</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+

@@ -1,65 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="description" content="VaultEdge blog — expert investment tips, market analysis, and wealth management guides.">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Financial Insights — VaultEdge</title>
-    <link rel="icon" href="img/core-img/favicon.ico">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="css/custom-override.css">
-</head>
-<body>
-    <div class="preloader d-flex align-items-center justify-content-center">
-        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-    </div>
+{% extends "util/base.html" %}
 
-    <!-- ===== NAVBAR (single dark bar, logo left, nav center, CTA right) ===== -->
-    <header class="ve-header" id="ve-sticky">
-        <div class="container-fluid ve-nav-wrap">
-            <!-- Logo -->
-            <div class="ve-logo">
-                <a href="home.html">
-                    <span class="ve-logo-icon">C</span>
-                    <span class="ve-logo-text">Chry<strong>salis</strong></span>
-                </a>
-            </div>
-
-            <!-- Nav Links -->
-            <nav class="ve-nav">
-                <ul>
-                    <li><a href="home.html">Home</a></li>
-                    <li><a href="home.html">About</a></li>
-                    <li><a href="Learn.html" class="active">Learning Modules</a></li>
-                    <li><a href="paperT-home.html">Paper Trading</a></li>
-                    <li><a href="chrysalis-ai.html">Chrysalis AI</a></li>
-                </ul>
-            </nav>
-
-            <!-- CTA -->
-            <div class="ve-nav-cta">
-                <a href="index.html" class="ve-cta-btn"> Logout <i class="fa fa-arrow-right"></i></a>
-            </div>
-
-            <!-- Mobile Toggle -->
-            <button class="ve-toggler" id="ve-toggle">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div class="ve-mobile-menu" id="ve-mobile-menu">
-            <ul>
-                <li><a href="home.html">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="Learn.html" class="active">Learning Modules</a></li>
-                <li><a href="paperT-home.html">Paper Trading</a></li>
-                <li><a href="chrysalis-ai.html">Chrysalis AI</a></li>
-            </ul>
-        </div>
-    </header>
-
+{% block content %}
     <section class="ve-page-hero" style="background-image:url(img/bg-img/24.png);">
         <div class="ve-page-hero-overlay"></div>
         <div class="container ve-page-hero-content">
@@ -350,11 +291,4 @@
         }
     </script>
 
-    <script src="js/jquery/jquery-2.2.4.min.js"></script>
-    <script src="js/bootstrap/popper.min.js"></script>
-    <script src="js/bootstrap/bootstrap.min.js"></script>
-    <script src="js/plugins/plugins.js"></script>
-    <script src="js/active.js"></script>
-    <script src="js/vaultedge.js"></script>
-</body>
-</html>
+{% endblock content %}
