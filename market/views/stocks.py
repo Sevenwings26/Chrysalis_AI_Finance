@@ -29,3 +29,5 @@ def stock_list(request):
     )
 
 
+
+# def buy stock 
