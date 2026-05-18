@@ -56,39 +56,29 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for txn in transactions %}
                             <tr>
                                 <td>
-                                    <strong>PRESCO</strong><br>
-                                    <span style="color: #94A3B8; font-size: 12px;">0000831222</span>
+                                    <strong>{{ txn.symbol }}</strong><br>
+                                    <span style="color:#94A3B8; font-size:12px;">{{ txn.reference }}</span>
                                 </td>
-                                <td style="color: #10B981;">MARKET / BUY</td>
-                                <td>₦10,992.91</td>
-                                <td>6 shares</td>
-                                <td>13 Jan 2026</td>
-                                <td><span class="status-pill status-booked">BOOKED</span></td>
-                            </tr>
-                            <tr>
+                                <td style="color: {% if txn.transaction_type == 'BUY' %}#10B981{% else %}#EF4444{% endif %};">
+                                    MARKET / {{ txn.transaction_type }}
+                                </td>
+                                <td>₦{{ txn.amount|floatformat:2|intcomma }}</td>
+                                <td>{{ txn.quantity|floatformat:0 }} shares</td>
+                                <td>{{ txn.created_at|date:"d M Y" }}</td>
                                 <td>
-                                    <strong>PRESCO</strong><br>
-                                    <span style="color: #94A3B8; font-size: 12px;">0000710097</span>
+                                    <span class="status-pill status-success">EXECUTED</span>
                                 </td>
-                                <td style="color: #10B981;">MARKET / BUY</td>
-                                <td>₦1,628.51</td>
-                                <td>1 shares</td>
-                                <td>30 Dec 2025</td>
-                                <td><span class="status-pill status-success">EXECUTED</span></td>
                             </tr>
+                            {% empty %}
                             <tr>
-                                <td>
-                                    <strong>DANGCEM</strong><br>
-                                    <span style="color: #94A3B8; font-size: 12px;">0000710138</span>
+                                <td colspan="6" style="text-align:center; padding:30px; color:#94A3B8;">
+                                    No trades yet. Buy your first stock!
                                 </td>
-                                <td style="color: #10B981;">MARKET / BUY</td>
-                                <td>₦6,825.98</td>
-                                <td>10 shares</td>
-                                <td>30 Dec 2025</td>
-                                <td><span class="status-pill status-pending">EXECUTING</span></td>
                             </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>

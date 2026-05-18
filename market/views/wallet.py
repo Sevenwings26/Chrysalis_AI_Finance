@@ -60,3 +60,58 @@ def deposit_view(request):
     return redirect('paper-wallet')
 
 
+
+
+@login_required
+def withdraw_view(request):
+
+    if request.method == "POST":
+
+        amount = request.POST.get("amount")
+
+        try:
+            amount = Decimal(amount)
+
+            if amount <= 0:
+                messages.error(request, "Invalid withdrawal amount")
+                return redirect("paper-wallet")
+
+            wallet = request.user.wallet
+
+            # -----------------------------------
+            # Insufficient balance protection
+            # -----------------------------------
+
+            if wallet.balance < amount:
+                messages.error(request, "Insufficient wallet balance")
+                return redirect("paper-wallet")
+
+            # -----------------------------------
+            # Deduct funds
+            # -----------------------------------
+
+            wallet.balance -= amount
+            wallet.save()
+
+            # -----------------------------------
+            # Create transaction record
+            # -----------------------------------
+
+            Transaction.objects.create(
+                wallet=wallet,
+                transaction_type="WITHDRAWAL",
+                amount=amount,
+                status="SUCCESS",
+                reference=str(uuid.uuid4())
+            )
+
+            messages.success(
+                request,
+                f"₦{amount} withdrawn successfully"
+            )
+
+        except Exception as e:
+            print(e)
+            messages.error(request, "Withdrawal failed")
+
+    return redirect("paper-wallet")

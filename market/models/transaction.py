@@ -35,6 +35,10 @@ class Transaction(models.Model):
         default=TransactionStatus.SUCCESS
     )
 
+    symbol = models.CharField(max_length=20, blank=True, default="")
+    name = models.CharField(max_length=100, blank=True, default="")
+    quantity = models.DecimalField(max_digits=12, decimal_places=4, default=Decimal('0'))
+    price_per_unit = models.DecimalField(max_digits=12, decimal_places=4, default=Decimal('0'))
     reference = models.CharField(
         max_length=100,
         unique=True

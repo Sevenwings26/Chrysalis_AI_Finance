@@ -18,10 +18,15 @@ from django.contrib.auth.views import (
     PasswordResetConfirmView,
     PasswordResetCompleteView
 )
+from learn.models import Video
 
 # landing page 
 def index(requests):
-    return render(requests, 'index.html')
+    all_videos = Video.objects.select_related('category').all()
+    context = {
+        'all_videos': all_videos,
+    }
+    return render(requests, 'index.html', context)
 
 # def about(requests):
 #     return render(requests, 'about.html')

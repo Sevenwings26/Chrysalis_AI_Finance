@@ -234,3 +234,15 @@ class NGXStockProvider:
         except (TypeError, ValueError):
             return default
 
+
+    def search_stocks(self, query: str):
+        """Filter already-fetched stocks by symbol or name (case-insensitive)."""
+        all_stocks = self.get_all_stocks()
+        query = query.strip().lower()
+        if not query:
+            return all_stocks
+        return [
+            s for s in all_stocks
+            if query in s.get("symbol", "").lower()
+            or query in s.get("name", "").lower()
+        ]

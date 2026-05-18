@@ -132,6 +132,101 @@
             </div>
         </div>
     </section>
+
+    <!-- ===== VIDEOS ===== -->
+        <!-- ===== LATEST INSIGHTS ===== -->
+    <section class="ve-section ve-insights-section">
+        <div class="container">
+            <div class="ve-section-header text-center">
+                <span class="ve-section-tag">Curriculum &amp; Updates</span>
+                <h2>Featured Video <span>Modules</span></h2>
+                <p>Continue your journey to financial competence with our newest structured lessons designed to make market mastery accessible to everyone.</p>
+            </div>
+            {% if user.is_authenticated %}
+                <div class="row">       
+                    {% for video in all_videos %}
+                        <div class="col-12 col-md-6 wow fadeInUp video-card-col"
+                                data-wow-delay="{{ forloop.counter0 }}00ms"
+                                data-title="{{ video.title|lower }}"
+                                data-category="{{ video.category.slug }}">
+
+                            <div class="ve-insight-card">
+
+                                <!-- Thumbnail -->
+                                <div class="ve-insight-img bg-img"
+                                        style="background-image: url({% if video.thumbnail %}{{ video.thumbnail.url }}{% else %}{% static 'img/bg-img/placeholder.jpg' %}{% endif %});">
+                                    <div class="play-button-overlay">
+                                        <i class="fa fa-play-circle"></i>
+                                    </div>
+
+                                    {% if video.is_featured %}
+                                    <span class="ve-featured-badge">Featured</span>
+                                    {% endif %}
+
+                                    {% if request.user.is_authenticated %}
+                                        {% for progress in request.user.uservideoprogress_set.all %}
+                                            {% if progress.video_id == video.id and progress.watched %}
+                                            <span class="ve-watched-badge"><i class="fa fa-check"></i> Watched</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+
+                                <!-- Body -->
+                                <div class="ve-insight-body">
+                                    <span class="ve-insight-cat">
+                                        Module {{ video.module_number }}: {{ video.category.name }}
+                                    </span>
+
+                                    <h5>
+                                        <a href="{% url 'video_detail' video.slug %}">
+                                            {{ video.title }}
+                                        </a>
+                                    </h5>
+
+                                    <p>{{ video.description|truncatewords:20 }}</p>
+
+                                    <div class="ve-insight-meta">
+                                        <span><i class="fa fa-clock-o"></i> {{ video.duration }}</span>
+                                        <span><i class="fa fa-eye"></i> {{ video.views }} views</span>
+
+                                        {% if video.video_url %}
+                                        <a href="javascript:void(0);"
+                                            onclick="playVideo('{{ video.video_url.url }}', {{ video.id }})">
+                                            Watch Video <i class="fa fa-play"></i>
+                                        </a>
+                                        {% elif video.youtube_url %}
+                                        <a href="{{ video.youtube_url }}" target="_blank" rel="noopener">
+                                            Watch on YouTube <i class="fa fa-youtube-play"></i>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        {% empty %}
+                        <!-- Empty state -->
+                        <div class="col-12">
+                            <div class="ve-empty-state">
+                                <i class="fa fa-film"></i>
+                                <h5>No modules available yet</h5>
+                                <p>Check back soon — new content is on the way.</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="ve-nav-cta">
+                    <a href="{% url 'login' %}" class="ve-cta-btn"> 
+                        Login / Register to view courses <i class="fa fa-arrow-right"></i>
+                    </a>
+                </div>
+                {% endif %}
+
+    </section>
+
     <!-- ===== NEWSLETTER ===== -->
      {% include "util/footer.html" %}
   
