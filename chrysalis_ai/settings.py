@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
+import dj_database_url
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +28,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
+# DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -86,13 +89,22 @@ WSGI_APPLICATION = 'chrysalis_ai.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
+# DATABASE_URL=config('DATABASE_URL')
+
+DATABASES = {
+    "default": dj_database_url.config(
+        default=config("DATABASE_URL"),
+        conn_max_age=600,
+        # ssl_require=False,
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -148,20 +160,12 @@ BASE_URL = "https://www.ngxpulse.ng/api/ngxdata/stocks"
 
 GEMINI_API_KEY=config("GEMINI_API_KEY")
 
-# Email Settings (for Password Reset)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'          # or your email provider
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER') 
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') 
 
-DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
+# settings.py
 
+import os
+import dj_database_url
 
-"""
-
-"""
 
 # CACHES = {
 #     "default": {
@@ -174,3 +178,44 @@ DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
 #     }
 # }
 
+
+# ====================== CACHING ======================
+REDIS_URL = config('REDIS_URL')  # Render automatically provides this
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "SOCKET_CONNECT_TIMEOUT": 5,
+            "SOCKET_TIMEOUT": 5,
+            "IGNORE_EXCEPTIONS": True,        # Important for production
+            "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",  # Optional: save space
+        },
+        "KEY_PREFIX": "chrysalis",           # Important to avoid collisions
+        "TIMEOUT": 300,                      # Default 5 minutes
+    }
+}
+
+# Optional: Use Redis for sessions (recommended)
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+
+
+
+# Email Settings (for Password Reset)
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'          # or your email provider
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER') 
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') 
+
+# DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
+
+
+"""
+
+"""
