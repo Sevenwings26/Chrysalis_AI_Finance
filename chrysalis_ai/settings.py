@@ -30,7 +30,10 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG')
 # DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*',
+                 'chrysalis-ai-finance.vercel.app',
+
+                 ]
 
 
 # Application definition
@@ -89,22 +92,22 @@ WSGI_APPLICATION = 'chrysalis_ai.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-# DATABASE_URL=config('DATABASE_URL')
-
+# To run LOCALLY - Uncomment
 DATABASES = {
-    "default": dj_database_url.config(
-        default=config("DATABASE_URL"),
-        conn_max_age=600,
-        # ssl_require=False,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
+# # To run on DEPLOYMENT
+# DATABASES = {
+#     "default": dj_database_url.config(
+#         default=config("DATABASE_URL"),
+#         conn_max_age=600,
+#         # ssl_require=False,
+#     )
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -156,15 +159,8 @@ MEDIA_URL = '/media/'
 
 NGX_API_KEY = config("NGX_API_KEY")
 BASE_URL = "https://www.ngxpulse.ng/api/ngxdata/stocks"
-# GROK_API_KEY=config("GROK_API_KEY")
 
 GEMINI_API_KEY=config("GEMINI_API_KEY")
-
-
-# settings.py
-
-import os
-import dj_database_url
 
 
 # CACHES = {
